@@ -1,35 +1,52 @@
 import React, { useEffect, useState } from 'react';
 
 const App: React.FC = () => {
-  // Define um estado para armazenar os dados recebidos da extensão
-  const [dataFromExtension, setDataFromExtension] = useState<string | null>(null);
+  const [dataFromExtension, setDataFromExtension] = useState<string[]>([]);
+  const [shouldSendAutomatically, setShouldSendAutomatically] = useState(false);
 
   useEffect(() => {
     const handleResponse = (event: MessageEvent) => {
       if (event.data.type === "ExtensionData") {
         console.log("Dados recebidos da extensão:", event.data.data);
-        setDataFromExtension(event.data.data);
+        setDataFromExtension(prevData => [...prevData, event.data.data]);
       }
     };
 
     window.addEventListener('message', handleResponse);
 
-    // Remove o event listener ao desmontar o componente
+    let intervalId: ReturnType<typeof setInterval>;
+    if (shouldSendAutomatically) {
+      intervalId = setInterval(() => {
+        window.postMessage({ type: "RequestDataStorage" }, "*");
+      }, 10000); // 10000 milissegundos = 10 segundos
+    }
+
     return () => {
       window.removeEventListener('message', handleResponse);
+      if (intervalId !== undefined) clearInterval(intervalId);
     };
-  }, []);
+  }, [shouldSendAutomatically]);
 
-  const requestData = () => {
-    window.postMessage({ type: "RequestDataStorage" }, "*");
+  const startSendingData = () => {
+    if (!shouldSendAutomatically) {
+      setShouldSendAutomatically(true);
+      window.postMessage({ type: "RequestDataStorage" }, "*");
+    }
   };
 
   return (
     <div>
       <h1>Página de Comunicação com a Extensão</h1>
-      <button onClick={requestData}>Pedir Dados para a Extensão</button>
-      {/* Exibe os dados recebidos na tela */}
-      {dataFromExtension ? <p>Dados Recebidos: {dataFromExtension}</p> : <p>Nenhum dado recebido ainda.</p>}
+      <button onClick={startSendingData}>Iniciar Pedido de Dados</button>
+      {dataFromExtension.length > 0 ? (
+        <ul>
+          {dataFromExtension.map((data, index) => (
+            <li key={index}>Dados Recebidos: {data}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>Nenhum dado recebido ainda.</p>
+      )}
     </div>
   );
 };

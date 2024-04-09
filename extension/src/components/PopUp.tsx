@@ -14,6 +14,7 @@ const Popup = () => {
     if (inputValue) {
       chrome.runtime.sendMessage({ action: 'saveData', data: inputValue }, (response) => {
         console.log('Resposta do background:', response);
+        setInputValue("");
       });
     }
   };
