@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const App: React.FC = () => {
   const [dataFromExtension, setDataFromExtension] = useState<string[]>([]);
@@ -8,11 +8,11 @@ const App: React.FC = () => {
     const handleResponse = (event: MessageEvent) => {
       if (event.data.type === "ExtensionData") {
         console.log("Dados recebidos da extensão:", event.data.data);
-        setDataFromExtension(prevData => [...prevData, event.data.data]);
+        setDataFromExtension((prevData) => [...prevData, event.data.data]);
       }
     };
 
-    window.addEventListener('message', handleResponse);
+    window.addEventListener("message", handleResponse);
 
     let intervalId: ReturnType<typeof setInterval>;
     if (shouldSendAutomatically) {
@@ -22,7 +22,7 @@ const App: React.FC = () => {
     }
 
     return () => {
-      window.removeEventListener('message', handleResponse);
+      window.removeEventListener("message", handleResponse);
       if (intervalId !== undefined) clearInterval(intervalId);
     };
   }, [shouldSendAutomatically]);

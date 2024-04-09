@@ -13,7 +13,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         console.log("Enviou:", result.dados[index]);
         index++; // Move para o próximo item
       } else {
-        sendResponse({ data: "Não há mais dados ou não há dados armazenados." });
+        sendResponse({
+          data: "Não há mais dados ou não há dados armazenados.",
+        });
         index = 0; // Reinicia o índice se chegou ao fim do array ou não há dados
       }
     });
@@ -21,7 +23,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 });
 
-function addData(newData: any) {
+function addData(newData: string) {
   chrome.storage.local.get({ dados: [] }, (result) => {
     const updatedDados = [...result.dados, newData];
     chrome.storage.local.set({ dados: updatedDados }, () => {

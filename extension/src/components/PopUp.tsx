@@ -1,9 +1,9 @@
 // src/Popup.tsx
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const Popup = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -12,10 +12,13 @@ const Popup = () => {
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (inputValue) {
-      chrome.runtime.sendMessage({ action: 'saveData', data: inputValue }, (response) => {
-        console.log('Resposta do background:', response);
-        setInputValue("");
-      });
+      chrome.runtime.sendMessage(
+        { action: "saveData", data: inputValue },
+        (response) => {
+          console.log("Resposta do background:", response);
+          setInputValue("");
+        }
+      );
     }
   };
 
