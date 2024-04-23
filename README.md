@@ -8,7 +8,7 @@ Background : Tem a função de ouvir as mensagens vindas do pop-up e do content 
 Content : Realiza a comunicação entre a página e a extensão, envia e recebe mensagens para o background(pedindo dados) e cria e recebe eventos personalizados da página, esses eventos personalizados podem conter dados.
 Pop-Up : Área de interação com o usuário, digitar dados, por exemplo.
 
-![image](https://github.com/GusTenshou/projeto_ic_microtransactions/assets/135083590/648f538d-0b34-4c90-ae4f-1eb48836fdbd)
+![image](https://github.com/GusTenshou/projeto_ic_microtransactions/assets/135083590/8b5592bc-fafe-4f75-a8b9-b303ea19df1c)
 
 
 
