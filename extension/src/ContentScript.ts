@@ -1,18 +1,26 @@
 window.addEventListener("message", (event) => {
-  if (event.data.type === "RequestDataStorage") {
-    chrome.runtime.sendMessage({ action: "getData" }, (response) => {
-      // Verifica se a resposta não é undefined antes de tentar acessar suas propriedades
+  if (event.data.type === "Send_h(100)") {
+    chrome.runtime.sendMessage({ action: "Deliver_h(100)" }, (response) => {
       if (response !== undefined) {
-        window.postMessage({ type: "ExtensionData", data: response.data }, "*");
+        window.postMessage(
+          { type: "Recover_h(100)", data: response.data },
+          "*"
+        );
         console.log("Enviou à paǵina web");
       } else {
-        // Se response for undefined, talvez você queira tratar esse caso de forma diferente
         window.postMessage(
-          { type: "ExtensionData", data: "No data found" },
+          { type: "Recover_h(100)", data: "No data found" },
           "*"
         );
       }
-      console.log("Recebeu requisição e enviou ao background");
+    });
+  } else if (event.data.type === "RequestHashChain") {
+    chrome.runtime.sendMessage({ action: "DeliverHashchain" }, (response) => {
+      if (response !== undefined) {
+        window.postMessage({ type: "HashChain", data: response.data }, "*");
+      } else {
+        window.postMessage({ type: "HashChain", data: "No data found" }, "*");
+      }
     });
   }
 });

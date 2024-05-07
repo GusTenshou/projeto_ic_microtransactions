@@ -1,33 +1,40 @@
-let index = 0; // Mantém o índice do próximo item a ser enviado
+import createHashChain from "./hashMaker.ts";
+let indexHash = 1;
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message.action === "saveData") {
-    addData(message.data);
-    console.log("Dados salvos.");
-    sendResponse({ status: "Dados salvos com sucesso!" });
-    // Não é necessário retornar true aqui, a menos que você esteja enviando a resposta de forma assíncrona após o callback
-  } else if (message.action === "getData") {
-    chrome.storage.local.get({ dados: [] }, (result) => {
-      if (result.dados.length > 0 && index < result.dados.length) {
-        sendResponse({ data: result.dados[index] });
-        console.log("Enviou:", result.dados[index]);
-        index++; // Move para o próximo item
+  if (message.action === "makeHashChain") {
+    const { secret, length } = message.data;
+    addHash(createHashChain(secret, length));
+  } else if (message.action === "Deliver_h(100)") {
+    chrome.storage.local.get({ hashChain: [] }, (result) => {
+      const hashChain = result.hashChain || [];
+      if (hashChain.length > 0) {
+        sendResponse({ data: hashChain[hashChain.length - 1] });
       } else {
         sendResponse({
           data: "Não há mais dados ou não há dados armazenados.",
         });
-        index = 0; // Reinicia o índice se chegou ao fim do array ou não há dados
       }
     });
-    return true; // Indica que a resposta será enviada de forma assíncrona.
+  } else if (message.action === "DeliverHashchain") {
+    chrome.storage.local.get({ hashChain: [] }, (result) => {
+      const hashChain = result.hashChain || [];
+      if (hashChain.length > 0 && indexHash < hashChain.length) {
+        sendResponse({ data: hashChain[indexHash] });
+        indexHash++;
+      } else {
+        sendResponse({
+          data: "Não há mais dados ou não há dados armazenados.",
+        });
+        indexHash = 1; // Resetar o índice para começar de novo quando necessário
+      }
+    });
   }
 });
 
-function addData(newData: string) {
-  chrome.storage.local.get({ dados: [] }, (result) => {
-    const updatedDados = [...result.dados, newData];
-    chrome.storage.local.set({ dados: updatedDados }, () => {
-      console.log("Dados salvos!");
-    });
+function addHash(newData: `0x${string}`[]) {
+  // Diretamente substitui o vetor no storage sem verificar o valor anterior
+  chrome.storage.local.set({ hashChain: newData }, () => {
+    console.log("Hash chain salva com sucesso!");
   });
 }

@@ -1,52 +1,59 @@
 import React, { useEffect, useState } from "react";
 
 const App: React.FC = () => {
-  const [dataFromExtension, setDataFromExtension] = useState<string[]>([]);
-  const [shouldSendAutomatically, setShouldSendAutomatically] = useState(false);
+  const [hashChainElements, setHashChainElements] = useState<string[]>([]);
+  const [h100, setH100] = useState<string>("");
 
+  const [sendHashChainAutomatically, setSendHashChainAutomatically] =
+    useState(false);
+
+  // Handling messages from the extension
   useEffect(() => {
     const handleResponse = (event: MessageEvent) => {
-      if (event.data.type === "ExtensionData") {
-        console.log("Dados recebidos da extensão:", event.data.data);
-        setDataFromExtension((prevData) => [...prevData, event.data.data]);
+      switch (event.data.type) {
+        case "HashChain":
+          setHashChainElements((prev) => [...prev, event.data.data]);
+          break;
+        case "Recover_h(100)":
+          setH100(event.data.data);
+          break;
       }
     };
 
     window.addEventListener("message", handleResponse);
+    return () => window.removeEventListener("message", handleResponse);
+  }, []);
 
-    let intervalId: ReturnType<typeof setInterval>;
-    if (shouldSendAutomatically) {
-      intervalId = setInterval(() => {
-        window.postMessage({ type: "RequestDataStorage" }, "*");
-      }, 10000); // 10000 milissegundos = 10 segundos
+  // Handling automatic data requests
+
+  useEffect(() => {
+    let hashChainIntervalId: number | undefined;
+    if (sendHashChainAutomatically) {
+      hashChainIntervalId = setInterval(
+        () => window.postMessage({ type: "RequestHashChain" }, "*"),
+        10000
+      );
+      return () => clearInterval(hashChainIntervalId);
     }
+  }, [sendHashChainAutomatically]);
 
-    return () => {
-      window.removeEventListener("message", handleResponse);
-      if (intervalId !== undefined) clearInterval(intervalId);
-    };
-  }, [shouldSendAutomatically]);
-
-  const startSendingData = () => {
-    if (!shouldSendAutomatically) {
-      setShouldSendAutomatically(true);
-      window.postMessage({ type: "RequestDataStorage" }, "*");
-    }
-  };
+  const sendH100Once = () => window.postMessage({ type: "Send_h(100)" }, "*");
 
   return (
     <div>
-      <h1>Página de Comunicação com a Extensão</h1>
-      <button onClick={startSendingData}>Iniciar Pedido de Dados</button>
-      {dataFromExtension.length > 0 ? (
-        <ul>
-          {dataFromExtension.map((data, index) => (
-            <li key={index}>Dados Recebidos: {data}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>Nenhum dado recebido ainda.</p>
-      )}
+      <button
+        onClick={() =>
+          setSendHashChainAutomatically(!sendHashChainAutomatically)
+        }
+      >
+        {sendHashChainAutomatically ? "Parar Hash Chain" : "Iniciar Hash Chain"}
+      </button>
+      <button onClick={sendH100Once}>Enviar H100 Uma Vez</button>
+      <ul>
+        {hashChainElements.map((data, index) => (
+          <li key={index}>{data}</li>
+        ))}
+      </ul>
     </div>
   );
 };
