@@ -19,9 +19,9 @@ Pop-Up : Área de interação com o usuário, digitar dados, por exemplo.
 Utilização :
 
 1° : Instalar a API do google chrome para apis( npm install --save-dev @types/chrome).
-
-2° : rodar npm run build na extension .
-3° : carregar a pasta dist na aba de desenvolvedor de extensão do chrome.
-4° : rodar npm run dev na página.
-5° : usar a extensão no navegador juntamente à extensão.
+2° : Instalar viem para a hashchain ( npm install viem)
+3° : rodar npm run build na extension .
+4° : carregar a pasta dist na aba de desenvolvedor de extensão do chrome.
+5° : rodar npm run dev na página.
+6° : usar a extensão no navegador juntamente com os inputs da página e pop_up
 
