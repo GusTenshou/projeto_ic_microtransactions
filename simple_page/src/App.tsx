@@ -1,30 +1,29 @@
 import React, { useEffect, useState } from "react";
 
 const App: React.FC = () => {
-  const [hashChainElements, setHashChainElements] = useState<string[]>([]);
+  const [hashChainElements, setHashChainElements] = useState<
+    { data: string; index: number }[]
+  >([]);
   const [h100, setH100] = useState<string>("");
 
   const [sendHashChainAutomatically, setSendHashChainAutomatically] =
     useState(false);
 
-  // Handling messages from the extension
   useEffect(() => {
     const handleResponse = (event: MessageEvent) => {
-      switch (event.data.type) {
-        case "HashChain":
-          setHashChainElements((prev) => [...prev, event.data.data]);
-          break;
-        case "Recover_h(100)":
-          setH100(event.data.data);
-          break;
+      if (event.data.type === "HashChain") {
+        setHashChainElements((prev) => [
+          ...prev,
+          { data: event.data.data, index: event.data.index },
+        ]);
+      } else if (event.data.type === "Recover_h(100)") {
+        setH100(event.data.data);
       }
     };
 
     window.addEventListener("message", handleResponse);
     return () => window.removeEventListener("message", handleResponse);
   }, []);
-
-  // Handling automatic data requests
 
   useEffect(() => {
     let hashChainIntervalId: number | undefined;
@@ -50,8 +49,10 @@ const App: React.FC = () => {
       </button>
       <button onClick={sendH100Once}>Enviar H100 Uma Vez</button>
       <ul>
-        {hashChainElements.map((data, index) => (
-          <li key={index}>{data}</li>
+        {hashChainElements.map((element, index) => (
+          <li key={index}>
+            {element.index}: {element.data}
+          </li>
         ))}
       </ul>
     </div>
