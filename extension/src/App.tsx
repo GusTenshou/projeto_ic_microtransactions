@@ -1,14 +1,12 @@
-import PopUp from "./components/PopUp.tsx"
-import './App.css'
+import PopUp from "./components/PopUp.tsx";
+import "./App.css";
 
 function App() {
-  
-
   return (
     <div>
-      < PopUp />
+      <PopUp />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

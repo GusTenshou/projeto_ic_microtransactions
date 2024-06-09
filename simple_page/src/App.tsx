@@ -1,35 +1,62 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 const App: React.FC = () => {
-  // Define um estado para armazenar os dados recebidos da extensão
-  const [dataFromExtension, setDataFromExtension] = useState<string | null>(null);
+  const [hashChainElements, setHashChainElements] = useState<
+    { data: string; index: number }[]
+  >([]);
+  const [h100, setH100] = useState<string>("");
+
+  const [sendHashChainAutomatically, setSendHashChainAutomatically] =
+    useState(false);
 
   useEffect(() => {
     const handleResponse = (event: MessageEvent) => {
-      if (event.data.type === "ExtensionData") {
-        console.log("Dados recebidos da extensão:", event.data.data);
-        setDataFromExtension(event.data.data);
+      if (event.data.type === "HashChain") {
+        setHashChainElements((prev) => [
+          ...prev,
+          { data: event.data.data, index: event.data.index },
+        ]);
+      } else if (event.data.type === "Recover_h(100)") {
+        setH100(event.data.data);
       }
     };
 
-    window.addEventListener('message', handleResponse);
-
-    // Remove o event listener ao desmontar o componente
-    return () => {
-      window.removeEventListener('message', handleResponse);
-    };
+    window.addEventListener("message", handleResponse);
+    return () => window.removeEventListener("message", handleResponse);
   }, []);
 
-  const requestData = () => {
-    window.postMessage({ type: "RequestDataStorage" }, "*");
-  };
+  useEffect(() => {
+    let hashChainIntervalId: number | undefined;
+    if (sendHashChainAutomatically) {
+      hashChainIntervalId = setInterval(
+        () => window.postMessage({ type: "RequestHashChain" }, "*"),
+        3000
+      );
+      return () => clearInterval(hashChainIntervalId);
+    }
+  }, [sendHashChainAutomatically]);
+
+  const sendH100Once = () => window.postMessage({ type: "Send_h(100)" }, "*");
 
   return (
     <div>
-      <h1>Página de Comunicação com a Extensão</h1>
-      <button onClick={requestData}>Pedir Dados para a Extensão</button>
-      {/* Exibe os dados recebidos na tela */}
-      {dataFromExtension ? <p>Dados Recebidos: {dataFromExtension}</p> : <p>Nenhum dado recebido ainda.</p>}
+      <button
+        onClick={() =>
+          setSendHashChainAutomatically(!sendHashChainAutomatically)
+        }
+      >
+        {sendHashChainAutomatically
+          ? " Start Transmission"
+          : "Stop Transmission"}
+      </button>
+      <button onClick={sendH100Once}>Enviar H100 Uma Vez</button>
+      <ul>
+        {hashChainElements.map((element, index) => (
+          <li key={index}>
+            {element.index}: {element.data}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

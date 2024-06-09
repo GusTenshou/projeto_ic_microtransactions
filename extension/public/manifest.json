@@ -5,7 +5,8 @@
   "description": "Uma descrição da minha extensão.",
   "permissions": [
     "storage",
-    "activeTab"
+    "activeTab",
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "assets/background.js"
