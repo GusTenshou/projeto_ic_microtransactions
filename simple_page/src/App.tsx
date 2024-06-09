@@ -30,7 +30,7 @@ const App: React.FC = () => {
     if (sendHashChainAutomatically) {
       hashChainIntervalId = setInterval(
         () => window.postMessage({ type: "RequestHashChain" }, "*"),
-        10000
+        3000
       );
       return () => clearInterval(hashChainIntervalId);
     }
@@ -45,7 +45,9 @@ const App: React.FC = () => {
           setSendHashChainAutomatically(!sendHashChainAutomatically)
         }
       >
-        {sendHashChainAutomatically ? "Parar Hash Chain" : "Iniciar Hash Chain"}
+        {sendHashChainAutomatically
+          ? " Start Transmission"
+          : "Stop Transmission"}
       </button>
       <button onClick={sendH100Once}>Enviar H100 Uma Vez</button>
       <ul>
