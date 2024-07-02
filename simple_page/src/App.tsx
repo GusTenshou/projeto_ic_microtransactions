@@ -17,7 +17,9 @@ const App: React.FC = () => {
           { data: event.data.data, index: event.data.index },
         ]);
       } else if (event.data.type === "Recover_h(100)") {
+        console.log("Chegou", h100);
         setH100(event.data.data);
+        console.log("Aceito", h100);
       }
     };
 
@@ -46,10 +48,11 @@ const App: React.FC = () => {
         }
       >
         {sendHashChainAutomatically
-          ? " Start Transmission"
-          : "Stop Transmission"}
+          ? " Stop Transmission"
+          : "Start Transmission "}
       </button>
-      <button onClick={sendH100Once}>Enviar H100 Uma Vez</button>
+      <button onClick={sendH100Once}>Send Tail</button>
+      <ul>{h100}</ul>
       <ul>
         {hashChainElements.map((element, index) => (
           <li key={index}>
