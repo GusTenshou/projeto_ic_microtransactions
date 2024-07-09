@@ -1,4 +1,4 @@
-# Projeto de Transmissão de Dados entre Extensão e Página Web
+# Transmissão e armazenamento de HashChains em extensão
 
 Esse projeto tem como intuito possibilitar a transmissão de dados armazenados em uma extensão para uma página web. Ele é dividido em duas partes: a extensão e a página.
 
