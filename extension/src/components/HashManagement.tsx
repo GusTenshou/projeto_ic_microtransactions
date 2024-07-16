@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { HashObject } from "../utils/interfaces";
 
 const HashManagement = () => {
   const [inputKey, setInputKey] = useState("");
@@ -54,7 +55,7 @@ const HashManagement = () => {
           type="text"
           value={inputKey}
           onChange={handleInputKey}
-          placeholder="Digite a chave"
+          placeholder="Type the key"
         />
         <button type="submit">Show hash chain</button>
       </form>
@@ -63,9 +64,9 @@ const HashManagement = () => {
           type="text"
           value={selectKey}
           onChange={handleSelectKey}
-          placeholder="Digite a chave para selecionar"
+          placeholder="Type the key to select the hashchain"
         />
-        <button type="submit">Select hash chain</button>
+        <button type="submit">Select hashchain</button>
       </form>
       <button onClick={fetchCurrentHashKey}>Get Current Hash Key</button>
       <p>Current Hash Key: {currentHashKey}</p>
@@ -79,15 +80,5 @@ const HashManagement = () => {
     </div>
   );
 };
-
-interface HashObject {
-  address_contract: string;
-  address_to: string;
-  length: number;
-  hashchain: string[];
-  isValid: boolean;
-  key: string;
-  tail: string;
-}
 
 export default HashManagement;

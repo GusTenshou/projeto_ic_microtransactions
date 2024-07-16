@@ -41,20 +41,20 @@ const GenerateHash = () => {
         type="text"
         value={inputSecret}
         onChange={handleInputSecret}
-        placeholder="Digite o segredo"
+        placeholder="Type the secret"
       />
       <input
         type="number"
         value={inputLength}
         onChange={handleInputLength}
-        placeholder="Digite o comprimento"
+        placeholder="Type the length"
         min="1"
       />
       <input
         type="text"
         value={inputKey}
         onChange={handleInputKey}
-        placeholder="Digite a chave"
+        placeholder="Type the key"
       />
       <button type="submit">Create hash chain</button>
     </form>

@@ -10,9 +10,6 @@ function App() {
         <nav>
           <ul>
             <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
               <Link to="/generate">Generate Hash</Link>
             </li>
             <li>
@@ -21,7 +18,6 @@ function App() {
           </ul>
         </nav>
         <Routes>
-          <Route path="/" element={<h1>Hash Wallet</h1>} />
           <Route path="/generate" element={<GenerateHash />} />
           <Route path="/manage" element={<HashManagement />} />
         </Routes>

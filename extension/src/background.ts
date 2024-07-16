@@ -1,4 +1,6 @@
-import createHashChain from "./hashMaker.ts";
+import { createHashChain } from "/home/ubuntu/projeto_ic_microtransactions/extension/src/utils/UsefulFunctions.ts";
+import { addHash } from "/home/ubuntu/projeto_ic_microtransactions/extension/src/utils/UsefulFunctions.ts";
+import { HashObject } from "/home/ubuntu/projeto_ic_microtransactions/extension/src/utils/interfaces.ts";
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message.action === "makeHashChain") {
@@ -72,42 +74,3 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true; // Keeps the message channel open for async response
   }
 });
-
-function addHash(
-  newHashObject: HashObject,
-  key: string,
-  sendResponse: (response: any) => void
-) {
-  chrome.storage.local.get({ hashChains: [] }, (result) => {
-    let hashChains: HashObject[] = result.hashChains;
-
-    // Find the index of the existing hash object with the same key
-    const existingIndex = hashChains.findIndex((obj) => obj.key === key);
-
-    if (existingIndex !== -1) {
-      // Replace the existing hash object
-      hashChains[existingIndex] = newHashObject;
-      console.log(`Hash chain with key ${key} replaced successfully!`);
-    } else {
-      // Add the new hash object
-      hashChains.push(newHashObject);
-      console.log(`New hash chain with key ${key} added successfully!`);
-    }
-
-    // Save the updated hashChains array to local storage
-    chrome.storage.local.set({ hashChains: hashChains }, () => {
-      console.log("Hash chains saved successfully!");
-      sendResponse({ status: "success", key });
-    });
-  });
-}
-
-interface HashObject {
-  address_contract: string;
-  address_to: string;
-  length: number;
-  hashchain: string[];
-  isValid: boolean;
-  key: string;
-  tail: string;
-}
