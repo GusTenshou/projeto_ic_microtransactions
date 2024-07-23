@@ -1,16 +1,22 @@
-import { createHashChain } from "/home/ubuntu/projeto_ic_microtransactions/extension/src/utils/UsefulFunctions.ts";
-import { addHash } from "/home/ubuntu/projeto_ic_microtransactions/extension/src/utils/UsefulFunctions.ts";
-import { HashObject } from "/home/ubuntu/projeto_ic_microtransactions/extension/src/utils/interfaces.ts";
+import { createHashChain, addHash } from "./utils/UsefulFunctions";
+import { HashObject } from "./utils/interfaces";
+
+console.log("Background script loaded"); // Log when the background script is loaded
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  console.log("Received message:", message); // Log the received message
+
   if (message.action === "makeHashChain") {
+    console.log("Handling makeHashChain action"); // Log action handling
     const {
       secret,
       length,
       key,
     }: { secret: string; length: number; key: string } = message.data;
 
-    const start_chain: string[] = createHashChain(secret, length);
+    const start_chain = createHashChain(secret, length);
+    console.log("Hash chain created", start_chain); // Log the created hash chain
+
     const hashChainData: HashObject = {
       address_contract: "",
       address_to: "",
@@ -20,9 +26,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       key: key,
       tail: start_chain[start_chain.length - 1], // Set tail on creation
     };
+
     addHash(hashChainData, key, sendResponse);
     console.log("Hash created and stored");
   } else if (message.action === "Deliver_h(100)") {
+    console.log("Handling Deliver_h(100) action"); // Log action handling
     chrome.storage.local.get("selectedKey", (result) => {
       const hash_key: string = result.selectedKey;
       chrome.storage.local.get({ hashChains: [] }, (result) => {
@@ -34,13 +42,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           console.log("Hash sent,", hashTail);
         } else {
           sendResponse({
-            data: "Nao há mais dados ou não há dados armazenados.",
+            data: "No more hashs are stored",
           });
         }
       });
     });
     return true; // Keeps the message channel open for async response
   } else if (message.action === "DeliverHashchain") {
+    console.log("Handling DeliverHashchain action"); // Log action handling
     chrome.storage.local.get("selectedKey", (result) => {
       const hash_key: string = result.selectedKey;
       chrome.storage.local.get({ hashChains: [] }, (result) => {
@@ -66,7 +75,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         } else {
           console.log("Deu problema");
           sendResponse({
-            data: "Nao há mais hashs ou não há hashs armazenados.",
+            data: "No more hashs are stored",
           });
         }
       });

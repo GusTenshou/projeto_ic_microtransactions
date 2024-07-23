@@ -1,5 +1,5 @@
 import { keccak256 } from "viem";
-import { HashObject } from "../utils/interfaces.ts";
+import { HashObject } from "./interfaces";
 
 function toHex(str: string): `0x${string}` {
   let hex = "";
@@ -19,6 +19,34 @@ function createHashChain(secret: string, length: number): `0x${string}`[] {
   }
 
   return hashChain;
+}
+
+function getAllHashChains(): Promise<HashObject[]> {
+  return new Promise((resolve) => {
+    chrome.storage.local.get({ hashChains: [] }, (result) => {
+      resolve(result.hashChains);
+    });
+  });
+}
+
+function deleteHashChain(key: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get({ hashChains: [] }, (result) => {
+      let hashChains: HashObject[] = result.hashChains;
+      const existingIndex = hashChains.findIndex((obj) => obj.key === key);
+
+      if (existingIndex !== -1) {
+        hashChains.splice(existingIndex, 1); // Remove the hash chain
+        chrome.storage.local.set({ hashChains: hashChains }, () => {
+          console.log(`Hash chain with key ${key} deleted successfully!`);
+          resolve();
+        });
+      } else {
+        console.error(`Hash chain with key ${key} not found.`);
+        reject(`Hash chain with key ${key} not found.`);
+      }
+    });
+  });
 }
 
 function addHash(
@@ -50,4 +78,4 @@ function addHash(
   });
 }
 
-export { createHashChain, addHash };
+export { createHashChain, addHash, getAllHashChains, deleteHashChain };

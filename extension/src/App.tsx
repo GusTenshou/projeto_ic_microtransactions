@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import GenerateHash from "./components/GenerateHash";
 import HashManagement from "./components/HashManagement";
+import HashChainDetail from "./components/HashChainDetail";
 import "./App.css";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/generate" element={<GenerateHash />} />
           <Route path="/manage" element={<HashManagement />} />
+          <Route path="/hashchain/:key" element={<HashChainDetail />} />
         </Routes>
       </div>
     </Router>

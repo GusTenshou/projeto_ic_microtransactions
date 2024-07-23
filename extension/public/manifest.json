@@ -6,14 +6,15 @@
   "permissions": [
     "storage",
     "activeTab",
-    "<all_urls>"
+    "*://*/*"
   ],
   "background": {
-    "service_worker": "assets/background.js"
+    "service_worker": "assets/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["*://*/*"],
       "js": ["assets/contentScript.js"]
     }
   ],

@@ -20,6 +20,7 @@ const GenerateHash = () => {
   const handleHashSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     if (inputSecret && inputLength && inputKey) {
+      console.log("Comecou a enviar mensagem de criacao");
       chrome.runtime.sendMessage(
         {
           action: "makeHashChain",
